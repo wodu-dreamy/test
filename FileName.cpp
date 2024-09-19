@@ -1,43 +1,61 @@
 #include<stdio.h>
 #include<stdint.h>
 #include<inttypes.h>
-#define BOARD_SIZE 15
+#include<stdlib.h>
+#include<time.h>
+#include<windows.h>
 
-int main()
-{
-	char number_arr[BOARD_SIZE][BOARD_SIZE];
-	uint32_t x, y;
-	char cont = 'y';
+#define ROWS 10
+#define COLS 10
+#define EMPTY 0
+#define PLANTED 1
+#define MATURED 2
 
-	for(uint32_t i = 0 ; i < BOARD_SIZE; i++){
-		for (uint32_t j = 0; j < BOARD_SIZE; j++) {
-			number_arr[i][j] = '.';
+void print_farm(int farm[][COLS]);
+
+int main() {
+
+	int farm[ROWS][COLS];
+	srand((unsigned int)time(NULL));
+
+	for (int i = 0; i < ROWS; i++)
+	{
+		for (int j = 0; j < COLS; j++) {
+			farm[i][j] = (rand() % 2 == 0) ? EMPTY : PLANTED;
 		}
-
 	}
-	while (cont == 'y' || cont == 'Y') {
 
-		for (uint32_t i = 0; i < BOARD_SIZE; i++) {
-			for (uint32_t j = 0; j < BOARD_SIZE j++) {
-				printf("%c ", number_arr[i][j]);
+	print_farm(farm);
+	Sleep(1000);
+
+	for (int time = 0; time < 5; time++) {
+		system("cls");
+
+		for (int i = 0; i < ROWS; i++) {
+			for (int j = 0; j < COLS; j++) {
+				if (farm[i][j] == PLANTED) {
+					if (rand() % 10 < 3) {
+						farm[i][j] = MATURED;
+					}
+				}
 			}
-			printf("\n");
 		}
-		printf("请输入棋盘的行号和列号(0-%u)\n", BOARD_SIZE -1);
-		scanf_s("%" SCNu32 " %" SCNu32 "", &x, &y);
-
-		if (x < 14 && y < 14 && number_arr[x][y] == '.') {
-			number_arr[x][y] = 'X';
-		}
-		else {
-			puts("您输入的有问题！");
-		}
-		puts("是否继续下棋？（y/n)");
-		scanf_s(" %c",&cont, 1);
-		printf("\033[H\033[J"); //清屏！
-
+		print_farm(farm);
+		Sleep(1000);
 	}
-	printf("游戏结束！over GG!");
+	
 	return 0;
+}
+void print_farm(int farm[][COLS]) {
+	for (int i = 0; i < ROWS; i++) {
+		for (int j = 0; j < COLS; j++) {
+			switch (farm[i][j]) {
+			case EMPTY: printf(". "); break;
+			case PLANTED: printf("* "); break;
+			case MATURED: printf("# "); break;
 
+			}
+		}
+		printf("\n");
+	}
 }
